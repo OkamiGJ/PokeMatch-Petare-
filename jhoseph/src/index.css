@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/80ff523f-ff84-457d-a547-464588d3a3d3/de0gl5m-c3b0d78e-2174-4740-946e-e60bca17389a.jpg/v1/fill/w_1192,h_670,q_70,strp/hammerlocke__battlefields_background_by_willdinomaster55_de0gl5m-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTA4MCIsInBhdGgiOiIvZi84MGZmNTIzZi1mZjg0LTQ1N2QtYTU0Ny00NjQ1ODhkM2EzZDMvZGUwZ2w1bS1jM2IwZDc4ZS0yMTc0LTQ3NDAtOTQ2ZS1lNjBiY2ExNzM4OWEuanBnIiwid2lkdGgiOiI8PTE5MjAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.41GqRv_PFKE1131Lsx9RHzU8SlBcGWHzwYo0Isn3N3c");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
