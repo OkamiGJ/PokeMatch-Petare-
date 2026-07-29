@@ -127,7 +127,7 @@
 
 .pokemon-descripcion {
     width: 100%;
-    height: 120px;
+    height: 150px;
     background-color: #51AE5E;
     border: 2px solid #121212;
     border-radius: 8px;
@@ -250,28 +250,51 @@
     background-color: #1b365d;
     border: 3px solid var(--pokedex-border);
     border-radius: 15px;
-    padding: 40% 15px;
-    display:block;
+    height: 100%;
+    display:flex;
     flex-direction: column;
     gap: 20px;
     align-items: center;
-    margin-top: 50px;
+    margin-bottom: 1%;
+    margin-top: 15%;
 }
 
-.menu-btn {
+.filtro{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    max-height: 580px;
+    overflow-y: auto;
     width: 100%;
-    padding: 25px 10px;
-    background-color: #ffffff;
-    border: 3px solid var(--pokedex-border);
-    border-radius: 15px;
-    font-size: 1.0rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 0px rgba(0, 0, 0, 0.2);
-    transition: transform 0.1s;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-.menu-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2);
+.logo-tipo{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease;
+}
+
+.logo-tipo img{
+    width: 100%;
+    max-width: 100px;
+    height: auto;
+    object-fit: contain;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.logo-tipo.permitido img{/*desbloqueado*/
+    filter: grayscale(0%) drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.5));
+    opacity: 1;
+}
+
+.logo-tipo.bloqueado img{/*bloqueado*/
+    filter: grayscale(100%);
+    opacity: 0.3;
 }

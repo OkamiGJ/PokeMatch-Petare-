@@ -2,42 +2,84 @@ import React, { useState } from "react";
 import "./App.css";
 import { pokeData } from "./componentes/pokelist";
 
-// Puedes dejar el componente PokedexHud aquí mismo
-function PokedexHud({ childrenLeft, childrenRight }) {
+const TIPOS_POKEMON = [
+    { id: "Bicho", nombre: "Bicho", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/7.png" },
+    { id: "Siniestro", nombre: "Siniestro", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/17.png" },
+    { id: "Dragón", nombre: "Dragón", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/16.png" },
+    { id: "Eléctrico", nombre: "Eléctrico", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/13.png" },
+    { id: "Hada", nombre: "Hada", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/18.png" },
+    { id: "Lucha", nombre: "Lucha", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/2.png" },
+    { id: "Fuego", nombre: "Fuego", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/10.png" },
+    { id: "Volador", nombre: "Volador", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/3.png" },
+    { id: "Fantasma", nombre: "Fantasma", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/8.png" },
+    { id: "Planta", nombre: "Planta", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/12.png" },
+    { id: "Tierra", nombre: "Tierra", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/5.png" },
+    { id: "Hielo", nombre: "Hielo", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/15.png" },
+    { id: "Normal", nombre: "Normal", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/1.png" },
+    { id: "Veneno", nombre: "Veneno", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/4.png" },
+    { id: "Psíquico", nombre: "Psíquico", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/14.png" },
+    { id: "Roca", nombre: "Roca", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/6.png" },
+    { id: "Acero", nombre: "Acero", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/9.png" },
+    { id: "Agua", nombre: "Agua", icono: "https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/types/generation-viii/sword-shield/11.png" },
+];
 
-    const [disponibles, setDisponibles] = useState(pokeData.map((p)=>p.id)); /*paraque no se repitan pokemons*//*miedo en el rancho*/
+function PokedexHud() {
+    const [tiposPermitidos, setTiposPermitidos] = useState(
+        TIPOS_POKEMON.map((t) => t.nombre)
+    );
 
-    const [match, setMatch] = useState(()=>{
-        const randomIndex = Math.floor(Math.random() * pokeData.length);    
+    const [disponibles, setDisponibles] = useState(pokeData.map((p) => p.id));
+    const [match, setMatch] = useState(() => {
+        const randomIndex = Math.floor(Math.random() * pokeData.length);
         return pokeData[randomIndex];
-    })/*muestra el match actual*/
+    });
 
-    const nextMatch=()=>{
-        const restantes=disponibles.filter((id)=> id !== match.id);
-        if (restantes.length === 0) {
-            alert("¡Has visto a todos los Pokémon! Reiniciando la Pokédex...");
-            const nuevaLista = pokeData
-                .map((p) => p.id)
-                .filter((id) => id !== match.id);
-            setDisponibles(nuevaLista);
+    const toggleTipo = (nombreTipo) => {
+        let nuevosTipos;
+        if (tiposPermitidos.includes(nombreTipo)) {
+            nuevosTipos = tiposPermitidos.filter((t) => t !== nombreTipo);
+        } else {
+            nuevosTipos = [...tiposPermitidos, nombreTipo];
+        }
+        setTiposPermitidos(nuevosTipos);
+    };
 
-            const randomId = nuevaLista[Math.floor(Math.random() * nuevaLista.length)];
-            setMatch(pokeData.find((p) => p.id === randomId));
+    const obtenerPokemonsFiltrados = (listaIds) => {
+        return pokeData.filter(
+            (p) =>
+                listaIds.includes(p.id) &&
+                p.tipo.some((t) => tiposPermitidos.includes(t))
+        );
+    };
+
+    const nextMatch = () => {
+        const pokemonsValidos = obtenerPokemonsFiltrados(disponibles);
+
+        if (pokemonsValidos.length === 0) {
+            alert("No hay Pokemons disponibles con los filtros actuales");
             return;
-    }
+        }
 
-    const randomId = restantes[Math.floor(Math.random() * restantes.length)];
-        const siguiente = pokeData.find((p) => p.id === randomId);
+        const restantes = disponibles.filter((id) => id !== match.id);
+        const validosRestantes = obtenerPokemonsFiltrados(restantes);
 
-        setMatch(siguiente);
+        if (validosRestantes.length === 0) {
+            alert("No hay Pokemons Restantes. Reiniciando lista...");
+            const todosValidos = obtenerPokemonsFiltrados(pokeData.map((p) => p.id));
+            setDisponibles(pokeData.map((p) => p.id));
+            setMatch(todosValidos[Math.floor(Math.random() * todosValidos.length)]);
+            return;
+        }
+
+        const randomPoke = validosRestantes[Math.floor(Math.random() * validosRestantes.length)];
+        setMatch(randomPoke);
         setDisponibles(restantes);
     };
 
     return (
         <div className="pokedex-hud">
-
-            <div className="pokedex-izquierda">{/* Panel Izquierdo */}
-
+            {/* Panel Izquierdo */}
+            <div className="pokedex-izquierda">
                 <div className="borde-superior">
                     <div className="luz-az-G"></div>
                     <div className="luces-p">
@@ -47,10 +89,9 @@ function PokedexHud({ childrenLeft, childrenRight }) {
                     </div>
                 </div>
 
-
                 <div className="panel-central">
                     <div className="screen-content">
-                        { match?.imagen ? (
+                        {match?.imagen ? (
                             <img
                                 src={match.imagen}
                                 alt={match.nombre}
@@ -66,7 +107,6 @@ function PokedexHud({ childrenLeft, childrenRight }) {
                     </div>
                 </div>
 
-
                 <div className="controls">
                     <div className="pill-buttons">
                         <div className="pill yellow"></div>
@@ -76,11 +116,12 @@ function PokedexHud({ childrenLeft, childrenRight }) {
 
                 <div className="panel">
                     <div className="control">
-                        <div className="pokemon-name">{match?.nombre || "Cargando..."}
+                        <div className="pokemon-name">
+                            {match?.nombre || "Cargando..."}
                         </div>
                         <div className="pokemon-descripcion">
                             <div className="visualp1">
-                                Nivel:{match?.nivel} | Genero:{match?.genero}
+                                Nivel: {match?.nivel} | Genero: {match?.genero} | Tipo: {match?.tipo?.join(", ")}
                             </div>
                             <div className="visualp2">
                                 {match?.descripcion}
@@ -88,32 +129,46 @@ function PokedexHud({ childrenLeft, childrenRight }) {
                         </div>
                     </div>
 
-                  <div className="botones">
-                    <button className="boton smash" onClick={nextMatch}>
+                    <div className="botones">
+                        <button className="boton smash" onClick={nextMatch}>
                             SMASH
                         </button>
                         <button className="boton pass" onClick={nextMatch}>
                             PASS
                         </button>
-                  </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="hinge"></div>{/* Bisagra */}
+            {/* Bisagra */}
+            <div className="hinge"></div>
 
-            <div className="pokedex-derecha">{/* Panel Derecho */}
-              <div className="pokedex-derecha-contenido">
-                <div className="pantalla-derecha">
-                  <button className="menu-btn">Historial</button>
-                  <button className="menu-btn">Perfil</button>
+            {/* Panel Derecho */}
+            <div className="pokedex-derecha">
+                <div className="pokedex-derecha-contenido">
+                    <div className="pantalla-derecha">
+                        <div className="filtro">
+                            {TIPOS_POKEMON.map((tipo) => {
+                                const estaPermitido = tiposPermitidos.includes(tipo.nombre);
+                                return (
+                                    <button
+                                        key={tipo.id}
+                                        onClick={() => toggleTipo(tipo.nombre)}
+                                        className={`logo-tipo ${estaPermitido ? "permitido" : "bloqueado"}`}
+                                    >
+                                        <img src={tipo.icono} alt={tipo.nombre} />
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
         </div>
     );
 }
 
-// Componente principal de la aplicación
+// Componente principal
 export default function App() {
     return (
         <div className="main-container">
