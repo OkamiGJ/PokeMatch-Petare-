@@ -1,0 +1,5 @@
+# Imagen base
+FROM nginx:alpine
+
+# Copia tus archivos al contenedor (opcional)
+# COPY . /usr/share/nginx/html
